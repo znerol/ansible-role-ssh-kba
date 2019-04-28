@@ -1,0 +1,80 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: docker
+
+lint:
+  name: yamllint
+
+platforms:
+  - name: alpine-node
+    image: alpine
+    dockerfile: Dockerfile-ssh.j2
+    command: /usr/sbin/sshd -e -D
+    networks:
+      - name: molecule-ssh-m2m
+    tmpfs:
+      - /run
+      - /run/sshd:mode=0755
+
+  - name: centos-node
+    image: centos
+    dockerfile: Dockerfile-ssh.j2
+    command: /usr/sbin/sshd -e -D
+    networks:
+      - name: molecule-ssh-m2m
+    tmpfs:
+      - /run
+      - /run/sshd:mode=0755
+
+  - name: debian-node
+    image: debian
+    dockerfile: Dockerfile-ssh.j2
+    command: /usr/sbin/sshd -e -D
+    networks:
+      - name: molecule-ssh-m2m
+    tmpfs:
+      - /run
+      - /run/sshd:mode=0755
+
+  - name: fedora-node
+    image: fedora
+    dockerfile: Dockerfile-ssh.j2
+    command: /usr/sbin/sshd -e -D
+    networks:
+      - name: molecule-ssh-m2m
+    tmpfs:
+      - /run
+      - /run/sshd:mode=0755
+
+  - name: suse-node
+    image: opensuse/leap
+    dockerfile: Dockerfile-ssh.j2
+    command: /usr/sbin/sshd -e -D
+    networks:
+      - name: molecule-ssh-m2m
+    tmpfs:
+      - /run
+      - /run/sshd:mode=0755
+
+  - name: ubuntu-node
+    image: ubuntu
+    dockerfile: Dockerfile-ssh.j2
+    command: /usr/sbin/sshd -e -D
+    networks:
+      - name: molecule-ssh-m2m
+    tmpfs:
+      - /run
+      - /run/sshd:mode=0755
+
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

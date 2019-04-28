@@ -1,0 +1,30 @@
+---
+galaxy_info:
+  role_name: ssh_m2m
+  author: Lorenz Schori
+  description: >
+    Setup SSH public key authentication for machine to machine communication.
+
+  license: MIT
+
+  min_ansible_version: 2.5
+
+  platforms:
+    - name: GenericUNIX
+      versions:
+        - all
+        - any
+    - name: GenericBSD
+      versions:
+        - all
+        - any
+    - name: GenericLinux
+      versions:
+        - all
+        - any
+
+  galaxy_tags:
+    - ssh
+    - m2m
+
+dependencies: []
