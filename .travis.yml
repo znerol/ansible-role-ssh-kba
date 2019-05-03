@@ -1,0 +1,28 @@
+---
+dist: xenial
+
+language: python
+
+services:
+  - docker
+
+stages:
+  - "Lint"
+  - "Unit test"
+
+jobs:
+  include:
+    - stage: "Lint"
+      install:
+        - pip install 'ansible>=2.8.*' molecule docker
+      script:
+        - molecule lint
+
+    - stage: "Unit test"
+      install:
+        - pip install molecule docker
+      script:
+        - molecule test
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
