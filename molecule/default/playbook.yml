@@ -1,5 +1,38 @@
 ---
 - name: Converge
   hosts: all
-  roles:
-    - role: ansible-role-ssh-m2m
+  tasks:
+
+    - delegate_to: "{{ ssh_m2m_dest_hostname }}"
+      block:
+        - name: Destination user present
+          user:
+            name: "{{ ssh_m2m_dest_user }}"
+            state: present
+
+        - name: User ssh directory present
+          become: yes
+          become_user: "{{ ssh_m2m_dest_user }}"
+          file:
+            path: "~/.ssh"
+            state: directory
+            mode: 0700
+
+    - block:
+        - name: Source user present
+          user:
+            name: "{{ ssh_m2m_source_user }}"
+            state: present
+
+        - name: User ssh directory present
+          become: yes
+          become_user: "{{ ssh_m2m_source_user }}"
+          file:
+            path: "~/.ssh"
+            state: directory
+            mode: 0700
+
+    - name: Destination values
+      delegate_facts: yes
+      import_role:
+        name: ansible-role-ssh-m2m

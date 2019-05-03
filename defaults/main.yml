@@ -1,2 +1,51 @@
 ---
-# defaults file for ansible-role-ssh-m2m
+
+ssh_m2m_dest_hostname: "{{ inventory_hostname }}"
+ssh_m2m_dest_user: >-
+  {{ hostvars[ssh_m2m_dest_hostname]["ansible_user_id"] }}
+ssh_m2m_dest_host_fqdn: >-
+  {{ hostvars[ssh_m2m_dest_hostname]["ansible_fqdn"] }}
+ssh_m2m_dest_host_ip4: >-
+  {{ hostvars[ssh_m2m_dest_hostname]["ansible_default_ipv4"]["address"] | default("") }}
+ssh_m2m_dest_host_ip6: >-
+  {{ hostvars[ssh_m2m_dest_hostname]["ansible_default_ipv6"]["address"] | default("") }}
+ssh_m2m_dest_host_names: >-
+  {{ [
+        ssh_m2m_dest_host_fqdn,
+        ssh_m2m_dest_host_ip4,
+        ssh_m2m_dest_host_ip6,
+    ] | select() | list
+  }}
+ssh_m2m_dest_host_keys: >-
+  {{ [
+        ("ecdsa-sha2-nistp256", hostvars[ssh_m2m_dest_hostname]["ansible_ssh_host_key_ecdsa_public"]) if hostvars[ssh_m2m_dest_hostname]["ansible_ssh_host_key_ecdsa_public"] | default(False) else (),
+        ("ssh-dss", hostvars[ssh_m2m_dest_hostname]["ansible_ssh_host_key_dsa_public"]) if hostvars[ssh_m2m_dest_hostname]["ansible_ssh_host_key_dsa_public"] | default(False) else (),
+        ("ssh-ed25519", hostvars[ssh_m2m_dest_hostname]["ansible_ssh_host_key_ed25519_public"]) if hostvars[ssh_m2m_dest_hostname]["ansible_ssh_host_key_ed25519_public"] | default(False) else (),
+        ("ssh-rsa", hostvars[ssh_m2m_dest_hostname]["ansible_ssh_host_key_rsa_public"]) if hostvars[ssh_m2m_dest_hostname]["ansible_ssh_host_key_rsa_public"] | default(False) else (),
+     ] | select() | map("join", " ") | list
+  }}
+
+ssh_m2m_dest_authorized_keys_user: "{{ ssh_m2m_dest_user }}"
+
+ssh_m2m_source_hostname: "{{ inventory_hostname }}"
+ssh_m2m_source_user: >-
+  {{ hostvars[ssh_m2m_source_hostname]["ansible_user_id"] }}
+ssh_m2m_source_host_fqdn: >-
+  {{ hostvars[ssh_m2m_source_hostname]["ansible_fqdn"] }}
+ssh_m2m_source_host_ip4: >-
+  {{ hostvars[ssh_m2m_source_hostname]["ansible_default_ipv4"]["address"] | default("") }}
+ssh_m2m_source_host_ip6: >-
+  {{ hostvars[ssh_m2m_source_hostname]["ansible_default_ipv6"]["address"] | default("") }}
+
+ssh_m2m_source_known_hosts_owner: "{{ ssh_m2m_source_user }}"
+
+ssh_m2m_keypair_type: rsa
+ssh_m2m_keypair_name:
+  id_{{ ssh_m2m_keypair_type }}
+ssh_m2m_keypair_comment: >-
+  {{ ssh_m2m_source_user }}@{{ ssh_m2m_source_hostname }}
+ssh_m2m_keypair_owner: >-
+  {{ ssh_m2m_source_user }}
+ssh_m2m_keypair_dir: ~/.ssh
+ssh_m2m_keypair_path: >-
+  {{ ssh_m2m_keypair_dir }}/{{ ssh_m2m_keypair_name }}

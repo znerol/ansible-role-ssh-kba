@@ -1,2 +1,55 @@
 ---
-# tasks file for ansible-role-ssh-m2m
+- name: SSH host keys registered at source
+  delegate_to: "{{ ssh_m2m_source_hostname }}"
+  become: yes
+  become_user: "{{ ssh_m2m_source_known_hosts_owner }}"
+  loop: >-
+    {{ ssh_m2m_dest_host_names_and_keys }}
+  known_hosts:
+    hash_host: "{{ ssh_m2m_source_known_hosts_hash_host | default(omit) }}"
+    key: "{{ item.1 }}"
+    name: "{{ item.0 }}"
+    path: "{{ ssh_m2m_source_known_hosts_path | default(omit) }}"
+    state: present
+
+- name: SSH keypair present at source
+  delegate_to: "{{ ssh_m2m_source_hostname }}"
+  become: yes
+  become_user: "{{ ssh_m2m_source_user }}"
+  register: ssh_m2m_keypair_result
+  when: ssh_m2m_keypair_pub is not defined
+  openssh_keypair:
+    attributes: "{{ ssh_m2m_keypair_attributes | default(omit) }}"
+    comment: "{{ ssh_m2m_keypair_comment | default(omit) }}"
+    force: "{{ ssh_m2m_keypair_force | default(omit) }}"
+    group: "{{ ssh_m2m_keypair_group | default(omit) }}"
+    mode: 0600
+    owner: "{{ ssh_m2m_keypair_owner | default(omit) }}"
+    path: "{{ ssh_m2m_keypair_path }}"
+    selevel: "{{ ssh_m2m_keypair_selevel | default(omit) }}"
+    serole: "{{ ssh_m2m_keypair_serole | default(omit) }}"
+    setype: "{{ ssh_m2m_keypair_setype | default(omit) }}"
+    seuser: "{{ ssh_m2m_keypair_seuser | default(omit) }}"
+    size: "{{ ssh_m2m_keypair_size | default(omit) }}"
+    state: present
+    type: "{{ ssh_m2m_keypair_type }}"
+
+- name: SSH public key retreived
+  when: ssh_m2m_keypair_result is success
+  set_fact:
+    ssh_m2m_keypair_pub: "{{ ssh_m2m_keypair_result.public_key }}"
+
+- name: SSH public key authorized at destination
+  delegate_to: "{{ ssh_m2m_dest_hostname }}"
+  become: yes
+  become_user: "{{ ssh_m2m_dest_user }}"
+  when: ssh_m2m_keypair_pub is defined
+  authorized_key:
+    comment: "{{ ssh_m2m_dest_authorized_keys_comment | default(omit) }}"
+    exclusive: "{{ ssh_m2m_dest_authorized_keys_exclusive | default(omit) }}"
+    key: "{{ ssh_m2m_keypair_pub }}"
+    key_options: "{{ ssh_m2m_dest_authorized_keys_key_options | default(omit) }}"
+    manage_dir: "{{ ssh_m2m_dest_authorized_keys_manage_dir | default(omit) }}"
+    path: "{{ ssh_m2m_dest_authorized_keys_path | default(omit) }}"
+    state: present
+    user: "{{ ssh_m2m_dest_authorized_keys_user }}"

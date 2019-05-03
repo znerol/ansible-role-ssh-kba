@@ -9,16 +9,6 @@ lint:
   name: yamllint
 
 platforms:
-  - name: alpine-node
-    image: alpine
-    dockerfile: Dockerfile-ssh.j2
-    command: /usr/sbin/sshd -e -D
-    networks:
-      - name: molecule-ssh-m2m
-    tmpfs:
-      - /run
-      - /run/sshd:mode=0755
-
   - name: centos-node
     image: centos
     dockerfile: Dockerfile-ssh.j2
@@ -71,6 +61,29 @@ platforms:
 
 provisioner:
   name: ansible
+  inventory:
+    host_vars:
+      centos-node:
+        ssh_m2m_dest_hostname: fedora-node
+        ssh_m2m_dest_user: alpha
+        ssh_m2m_source_user: beta
+      debian-node:
+        ssh_m2m_dest_hostname: centos-node
+        ssh_m2m_dest_user: gamma
+        ssh_m2m_source_user: delta
+      ubuntu-node:
+        ssh_m2m_dest_hostname: debian-node
+        ssh_m2m_dest_user: epsilon
+        ssh_m2m_source_user: zeta
+      suse-node:
+        ssh_m2m_dest_hostname: ubuntu-node
+        ssh_m2m_dest_user: etha
+        ssh_m2m_source_user: theta
+      fedora-node:
+        ssh_m2m_dest_hostname: suse-node
+        ssh_m2m_dest_user: iota
+        ssh_m2m_source_user: kappa
+
   lint:
     name: ansible-lint
 
