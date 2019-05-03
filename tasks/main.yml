@@ -12,32 +12,11 @@
     path: "{{ ssh_kba_client_known_hosts_path | default(omit) }}"
     state: present
 
-- name: SSH keypair present at client
-  delegate_to: "{{ ssh_kba_client_hostname }}"
-  become: yes
-  become_user: "{{ ssh_kba_client_user }}"
-  register: ssh_kba_keypair_result
-  when: ssh_kba_keypair_pub is not defined
-  openssh_keypair:
-    attributes: "{{ ssh_kba_keypair_attributes | default(omit) }}"
-    comment: "{{ ssh_kba_keypair_comment | default(omit) }}"
-    force: "{{ ssh_kba_keypair_force | default(omit) }}"
-    group: "{{ ssh_kba_keypair_group | default(omit) }}"
-    mode: 0600
-    owner: "{{ ssh_kba_keypair_owner | default(omit) }}"
-    path: "{{ ssh_kba_keypair_path }}"
-    selevel: "{{ ssh_kba_keypair_selevel | default(omit) }}"
-    serole: "{{ ssh_kba_keypair_serole | default(omit) }}"
-    setype: "{{ ssh_kba_keypair_setype | default(omit) }}"
-    seuser: "{{ ssh_kba_keypair_seuser | default(omit) }}"
-    size: "{{ ssh_kba_keypair_size | default(omit) }}"
-    state: present
-    type: "{{ ssh_kba_keypair_type }}"
+- include_tasks: keypair-native.yml
+  when: ssh_kba_keypair_pub is not defined and ansible_version.full is version_compare('2.8', '>=')
 
-- name: SSH public key retreived
-  when: ssh_kba_keypair_result is success
-  set_fact:
-    ssh_kba_keypair_pub: "{{ ssh_kba_keypair_result.public_key }}"
+- include_tasks: keypair-compat.yml
+  when: ssh_kba_keypair_pub is not defined and ansible_version.full is version_compare('2.8', '<')
 
 - name: SSH public key authorized at server
   delegate_to: "{{ ssh_kba_server_hostname }}"

@@ -1,0 +1,57 @@
+---
+- name: Old SSH keypair removed from client
+  delegate_to: "{{ ssh_kba_client_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_client_user }}"
+  when: ssh_kba_keypair_force | default(False)
+  loop:
+    - "{{ ssh_kba_keypair_path }}"
+    - "{{ ssh_kba_keypair_path }}.pub"
+  file:
+    state: absent
+    path: "{{ item }}"
+
+- name: SSH keypair generated on client
+  delegate_to: "{{ ssh_kba_client_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_client_user }}"
+  args:
+    creates: "{{ ssh_kba_keypair_path }}"
+  command: >-
+    ssh-keygen
+    -t {{ ssh_kba_keypair_type | quote }}
+    {{ "-b {:d}".format(ssh_kba_keypair_size) if ssh_kba_keypair_size is defined else "" }}
+    {{ "-C {:s}".format(ssh_kba_keypair_comment) | quote if ssh_kba_keypair_comment is defined else "" }}
+    -f {{ ssh_kba_keypair_path | quote }}
+
+- name: SSH keypair file attributes set on client
+  delegate_to: "{{ ssh_kba_client_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_client_user }}"
+  loop:
+    - "{{ ssh_kba_keypair_path }}"
+    - "{{ ssh_kba_keypair_path }}.pub"
+  file:
+    state: file
+    path: "{{ item }}"
+    attributes: "{{ ssh_kba_keypair_attributes | default(omit) }}"
+    selevel: "{{ ssh_kba_keypair_selevel | default(omit) }}"
+    serole: "{{ ssh_kba_keypair_serole | default(omit) }}"
+    setype: "{{ ssh_kba_keypair_setype | default(omit) }}"
+    seuser: "{{ ssh_kba_keypair_seuser | default(omit) }}"
+    group: "{{ ssh_kba_keypair_group | default(omit) }}"
+    owner: "{{ ssh_kba_keypair_owner | default(omit) }}"
+
+- name: SSH public key retreived
+  delegate_to: "{{ ssh_kba_client_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_client_user }}"
+  register: ssh_kba_keypair_result
+  changed_when: no
+  command: >-
+    ssh-keygen -y
+    -f {{ ssh_kba_keypair_path | quote }}
+
+- name: SSH public key present
+  set_fact:
+    ssh_kba_keypair_pub: "{{ ssh_kba_keypair_result.stdout }}"
