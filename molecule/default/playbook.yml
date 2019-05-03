@@ -3,16 +3,16 @@
   hosts: all
   tasks:
 
-    - delegate_to: "{{ ssh_m2m_dest_hostname }}"
+    - delegate_to: "{{ ssh_kba_server_hostname }}"
       block:
         - name: Destination user present
           user:
-            name: "{{ ssh_m2m_dest_user }}"
+            name: "{{ ssh_kba_server_user }}"
             state: present
 
         - name: User ssh directory present
           become: yes
-          become_user: "{{ ssh_m2m_dest_user }}"
+          become_user: "{{ ssh_kba_server_user }}"
           file:
             path: "~/.ssh"
             state: directory
@@ -21,12 +21,12 @@
     - block:
         - name: Source user present
           user:
-            name: "{{ ssh_m2m_source_user }}"
+            name: "{{ ssh_kba_client_user }}"
             state: present
 
         - name: User ssh directory present
           become: yes
-          become_user: "{{ ssh_m2m_source_user }}"
+          become_user: "{{ ssh_kba_client_user }}"
           file:
             path: "~/.ssh"
             state: directory
@@ -35,4 +35,4 @@
     - name: Destination values
       delegate_facts: yes
       import_role:
-        name: ansible-role-ssh-m2m
+        name: ansible-role-ssh-kba

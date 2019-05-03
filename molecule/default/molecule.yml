@@ -14,7 +14,7 @@ platforms:
     dockerfile: Dockerfile-ssh.j2
     command: /usr/sbin/sshd -e -D
     networks:
-      - name: molecule-ssh-m2m
+      - name: molecule-ssh-kba
     tmpfs:
       - /run
       - /run/sshd:mode=0755
@@ -24,7 +24,7 @@ platforms:
     dockerfile: Dockerfile-ssh.j2
     command: /usr/sbin/sshd -e -D
     networks:
-      - name: molecule-ssh-m2m
+      - name: molecule-ssh-kba
     tmpfs:
       - /run
       - /run/sshd:mode=0755
@@ -34,7 +34,7 @@ platforms:
     dockerfile: Dockerfile-ssh.j2
     command: /usr/sbin/sshd -e -D
     networks:
-      - name: molecule-ssh-m2m
+      - name: molecule-ssh-kba
     tmpfs:
       - /run
       - /run/sshd:mode=0755
@@ -44,7 +44,7 @@ platforms:
     dockerfile: Dockerfile-ssh.j2
     command: /usr/sbin/sshd -e -D
     networks:
-      - name: molecule-ssh-m2m
+      - name: molecule-ssh-kba
     tmpfs:
       - /run
       - /run/sshd:mode=0755
@@ -54,7 +54,7 @@ platforms:
     dockerfile: Dockerfile-ssh.j2
     command: /usr/sbin/sshd -e -D
     networks:
-      - name: molecule-ssh-m2m
+      - name: molecule-ssh-kba
     tmpfs:
       - /run
       - /run/sshd:mode=0755
@@ -64,25 +64,25 @@ provisioner:
   inventory:
     host_vars:
       centos-node:
-        ssh_m2m_dest_hostname: fedora-node
-        ssh_m2m_dest_user: alpha
-        ssh_m2m_source_user: beta
+        ssh_kba_server_hostname: fedora-node
+        ssh_kba_server_user: alpha
+        ssh_kba_client_user: beta
       debian-node:
-        ssh_m2m_dest_hostname: centos-node
-        ssh_m2m_dest_user: gamma
-        ssh_m2m_source_user: delta
+        ssh_kba_server_hostname: centos-node
+        ssh_kba_server_user: gamma
+        ssh_kba_client_user: delta
       ubuntu-node:
-        ssh_m2m_dest_hostname: debian-node
-        ssh_m2m_dest_user: epsilon
-        ssh_m2m_source_user: zeta
+        ssh_kba_server_hostname: debian-node
+        ssh_kba_server_user: epsilon
+        ssh_kba_client_user: zeta
       suse-node:
-        ssh_m2m_dest_hostname: ubuntu-node
-        ssh_m2m_dest_user: etha
-        ssh_m2m_source_user: theta
+        ssh_kba_server_hostname: ubuntu-node
+        ssh_kba_server_user: etha
+        ssh_kba_client_user: theta
       fedora-node:
-        ssh_m2m_dest_hostname: suse-node
-        ssh_m2m_dest_user: iota
-        ssh_m2m_source_user: kappa
+        ssh_kba_server_hostname: suse-node
+        ssh_kba_server_user: iota
+        ssh_kba_client_user: kappa
 
   lint:
     name: ansible-lint

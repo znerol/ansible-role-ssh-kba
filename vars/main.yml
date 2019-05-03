@@ -1,9 +1,9 @@
 ---
-_ssh_m2m_dest_host_nxk: >-
-  {{ query("cartesian", ssh_m2m_dest_host_names, ssh_m2m_dest_host_keys) }}
-_ssh_m2m_dest_host_nxk_names: >-
-  {{ _ssh_m2m_dest_host_nxk | map("first") | list }}
-_ssh_m2m_dest_host_nxk_keys: >-
-  {{ _ssh_m2m_dest_host_nxk | map("join", " ") | list }}
-ssh_m2m_dest_host_names_and_keys: >-
-  {{ _ssh_m2m_dest_host_nxk_names | zip(_ssh_m2m_dest_host_nxk_keys) | list }}
+_ssh_kba_server_host_nxk: >-
+  {{ query("cartesian", ssh_kba_server_host_names, ssh_kba_server_host_keys) }}
+_ssh_kba_server_host_nxk_names: >-
+  {{ _ssh_kba_server_host_nxk | map("first") | list }}
+_ssh_kba_server_host_nxk_keys: >-
+  {{ _ssh_kba_server_host_nxk | map("join", " ") | list }}
+ssh_kba_server_host_names_and_keys: >-
+  {{ _ssh_kba_server_host_nxk_names | zip(_ssh_kba_server_host_nxk_keys) | list }}

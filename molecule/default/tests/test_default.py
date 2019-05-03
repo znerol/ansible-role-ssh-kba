@@ -9,37 +9,37 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 def test_authorized_connections(host):
     host_vars = host.ansible.get_variables()
 
-    dest_host = host_vars["ssh_m2m_dest_hostname"]
-    dest_user = host_vars["ssh_m2m_dest_user"]
-    source_user = host_vars["ssh_m2m_source_user"]
+    server_host = host_vars["ssh_kba_server_hostname"]
+    server_user = host_vars["ssh_kba_server_user"]
+    client_user = host_vars["ssh_kba_client_user"]
 
-    assert dest_user == host.check_output(
-        "sudo -u %s -- ssh -q -o BatchMode=yes %s@%s -- whoami", source_user,
-        dest_user, dest_host)
-    assert dest_host in host.check_output(
+    assert server_user == host.check_output(
+        "sudo -u %s -- ssh -q -o BatchMode=yes %s@%s -- whoami", client_user,
+        server_user, server_host)
+    assert server_host in host.check_output(
         "sudo -u %s -- ssh -q -o BatchMode=yes %s@%s -- getent hosts",
-        source_user, dest_user, dest_host)
+        client_user, server_user, server_host)
 
 
 def test_unauthorized_local_user(host):
     host_vars = host.ansible.get_variables()
 
-    dest_host = host_vars["ssh_m2m_dest_hostname"]
-    dest_user = host_vars["ssh_m2m_dest_user"]
-    source_user = "root"
+    server_host = host_vars["ssh_kba_server_hostname"]
+    server_user = host_vars["ssh_kba_server_user"]
+    client_user = "root"
 
     host.run_expect(
         [255], "sudo -u %s -- ssh -q -o BatchMode=yes %s@%s -- whoami",
-        source_user, dest_user, dest_host)
+        client_user, server_user, server_host)
 
 
 def test_unauthorized_remote_user(host):
     host_vars = host.ansible.get_variables()
 
-    dest_host = host_vars["ssh_m2m_dest_hostname"]
-    dest_user = "root"
-    source_user = host_vars["ssh_m2m_source_user"]
+    server_host = host_vars["ssh_kba_server_hostname"]
+    server_user = "root"
+    client_user = host_vars["ssh_kba_client_user"]
 
     host.run_expect(
         [255], "sudo -u %s -- ssh -q -o BatchMode=yes %s@%s -- whoami",
-        source_user, dest_user, dest_host)
+        client_user, server_user, server_host)

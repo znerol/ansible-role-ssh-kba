@@ -31,7 +31,7 @@ passed in as parameters) is always nice for users too:
     - hosts: servers
       tasks:
         - import_role:
-            name: znerol.ssh_m2m
+            name: znerol.ssh_kba
 
 License
 -------

@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: ssh_m2m
+  role_name: ssh_kba
   author: Lorenz Schori
   description: >
     Setup SSH public key authentication for machine to machine communication.
@@ -25,6 +25,6 @@ galaxy_info:
 
   galaxy_tags:
     - ssh
-    - m2m
+    - kba
 
 dependencies: []
