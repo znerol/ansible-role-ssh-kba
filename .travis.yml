@@ -21,6 +21,7 @@ jobs:
     - stage: "Unit test"
       install:
         - pip install molecule docker
+        - travis_wait 20 molecule create
       script:
         - molecule test
 
