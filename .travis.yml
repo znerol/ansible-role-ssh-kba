@@ -9,6 +9,7 @@ services:
 env:
   global:
     - ANSIBLE_PIPELINING=yes
+    - ANSIBLE_FORKS=16
 
 stages:
   - "Lint"
