@@ -6,6 +6,10 @@ language: python
 services:
   - docker
 
+env:
+  global:
+    - ANSIBLE_PIPELINING=yes
+
 stages:
   - "Lint"
   - "Unit test"
