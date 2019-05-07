@@ -10,7 +10,7 @@ lint:
 
 platforms:
   - name: centos-node
-    image: centos
+    image: znerolmolecule/molecule-prebuilt:centos
     dockerfile: Dockerfile-ssh.j2
     command: /usr/sbin/sshd -e -D
     networks:
@@ -20,7 +20,7 @@ platforms:
       - /run/sshd:mode=0755
 
   - name: debian-node
-    image: debian
+    image: znerolmolecule/molecule-prebuilt:debian
     dockerfile: Dockerfile-ssh.j2
     command: /usr/sbin/sshd -e -D
     networks:
@@ -30,7 +30,7 @@ platforms:
       - /run/sshd:mode=0755
 
   - name: fedora-node
-    image: fedora
+    image: znerolmolecule/molecule-prebuilt:fedora
     dockerfile: Dockerfile-ssh.j2
     command: /usr/sbin/sshd -e -D
     networks:
@@ -40,7 +40,7 @@ platforms:
       - /run/sshd:mode=0755
 
   - name: suse-node
-    image: opensuse/leap
+    image: znerolmolecule/molecule-prebuilt:opensuse-leap
     dockerfile: Dockerfile-ssh.j2
     command: /usr/sbin/sshd -e -D
     networks:
@@ -50,7 +50,7 @@ platforms:
       - /run/sshd:mode=0755
 
   - name: ubuntu-node
-    image: ubuntu
+    image: znerolmolecule/molecule-prebuilt:ubuntu
     dockerfile: Dockerfile-ssh.j2
     command: /usr/sbin/sshd -e -D
     networks:
