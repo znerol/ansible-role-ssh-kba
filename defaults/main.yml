@@ -25,7 +25,7 @@ ssh_kba_server_host_keys: >-
      ] | select() | map("join", " ") | list
   }}
 
-ssh_kba_server_authorized_keys_user: "{{ ssh_kba_server_user }}"
+ssh_kba_server_authorized_keys_owner: "{{ ssh_kba_server_user }}"
 
 ssh_kba_client_hostname: "{{ inventory_hostname }}"
 ssh_kba_client_user: >-

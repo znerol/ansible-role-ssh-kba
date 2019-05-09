@@ -21,7 +21,7 @@
 - name: SSH public key authorized at server
   delegate_to: "{{ ssh_kba_server_hostname }}"
   become: yes
-  become_user: "{{ ssh_kba_server_user }}"
+  become_user: "{{ ssh_kba_server_authorized_keys_owner }}"
   when: ssh_kba_keypair_pub is defined
   authorized_key:
     comment: "{{ ssh_kba_server_authorized_keys_comment | default(omit) }}"
@@ -31,4 +31,4 @@
     manage_dir: "{{ ssh_kba_server_authorized_keys_manage_dir | default(omit) }}"
     path: "{{ ssh_kba_server_authorized_keys_path | default(omit) }}"
     state: present
-    user: "{{ ssh_kba_server_authorized_keys_user }}"
+    user: "{{ ssh_kba_server_authorized_keys_owner }}"
