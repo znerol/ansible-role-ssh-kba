@@ -2,7 +2,7 @@
 - name: Old SSH keypair removed from client
   delegate_to: "{{ ssh_kba_client_hostname }}"
   become: yes
-  become_user: "{{ ssh_kba_client_user }}"
+  become_user: "{{ ssh_kba_keypair_owner }}"
   when: ssh_kba_keypair_force | default(False)
   loop:
     - "{{ ssh_kba_keypair_path }}"
@@ -14,7 +14,7 @@
 - name: SSH keypair generated on client
   delegate_to: "{{ ssh_kba_client_hostname }}"
   become: yes
-  become_user: "{{ ssh_kba_client_user }}"
+  become_user: "{{ ssh_kba_keypair_owner }}"
   args:
     creates: "{{ ssh_kba_keypair_path }}"
   command: >-
@@ -27,7 +27,7 @@
 - name: SSH keypair file attributes set on client
   delegate_to: "{{ ssh_kba_client_hostname }}"
   become: yes
-  become_user: "{{ ssh_kba_client_user }}"
+  become_user: "{{ ssh_kba_keypair_owner }}"
   loop:
     - "{{ ssh_kba_keypair_path }}"
     - "{{ ssh_kba_keypair_path }}.pub"
@@ -45,7 +45,7 @@
 - name: SSH public key retreived
   delegate_to: "{{ ssh_kba_client_hostname }}"
   become: yes
-  become_user: "{{ ssh_kba_client_user }}"
+  become_user: "{{ ssh_kba_keypair_owner }}"
   register: ssh_kba_keypair_result
   changed_when: no
   command: >-
