@@ -10,27 +10,11 @@
             name: "{{ ssh_kba_server_user }}"
             state: present
 
-        - name: User ssh directory present
-          become: yes
-          become_user: "{{ ssh_kba_server_user }}"
-          file:
-            path: "~/.ssh"
-            state: directory
-            mode: 0700
-
     - block:
         - name: Source user present
           user:
             name: "{{ ssh_kba_client_user }}"
             state: present
-
-        - name: User ssh directory present
-          become: yes
-          become_user: "{{ ssh_kba_client_user }}"
-          file:
-            path: "~/.ssh"
-            state: directory
-            mode: 0700
 
     - name: Destination values
       delegate_facts: yes

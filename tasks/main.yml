@@ -1,4 +1,16 @@
 ---
+- name: SSH home directory present at client
+  delegate_to: "{{ ssh_kba_client_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_client_known_hosts_owner }}"
+  when: >-
+      ssh_kba_client_known_hosts_path is not defined and
+      ssh_kba_server_host_names_and_keys | length > 0
+  file:
+    path: "~/.ssh"
+    state: directory
+    mode: 0700
+
 - name: SSH host keys registered at client
   delegate_to: "{{ ssh_kba_client_hostname }}"
   become: yes
@@ -17,6 +29,16 @@
 
 - include_tasks: keypair-compat.yml
   when: ssh_kba_keypair_pub is not defined and ansible_version.full is version_compare('2.8', '<')
+
+- name: SSH home directory present at server
+  delegate_to: "{{ ssh_kba_server_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_server_authorized_keys_owner }}"
+  when: ssh_kba_server_authorized_keys_path is not defined
+  file:
+    path: "~/.ssh"
+    state: directory
+    mode: 0700
 
 - name: SSH public key authorized at server
   delegate_to: "{{ ssh_kba_server_hostname }}"
