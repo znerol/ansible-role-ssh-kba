@@ -19,13 +19,13 @@ jobs:
   include:
     - stage: "Lint"
       install:
-        - pip install 'molecule[docker]>=2.22rc1'
+        - pip install 'molecule[docker]>=2.22rc1' flake8
       script:
         - molecule lint
 
     - stage: "Unit test"
       install:
-        - pip install 'molecule[docker]>=2.22rc1'
+        - pip install 'molecule[docker]>=2.22rc1' flake8
         - molecule create
       script:
         - molecule test
