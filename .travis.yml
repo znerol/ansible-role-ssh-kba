@@ -19,14 +19,14 @@ jobs:
   include:
     - stage: "Lint"
       install:
-        - pip install 'ansible>=2.8.*' molecule docker
+        - pip install 'molecule[docker]>=2.22rc1'
       script:
         - molecule lint
 
     - stage: "Unit test"
       install:
-        - pip install molecule docker
-        - travis_wait 20 molecule create
+        - pip install 'molecule[docker]>=2.22rc1'
+        - molecule create
       script:
         - molecule test
 
