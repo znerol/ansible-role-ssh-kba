@@ -1,0 +1,24 @@
+---
+- name: SSH home directory present at server
+  delegate_to: "{{ ssh_kba_server_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_server_authorized_keys_owner }}"
+  when: ssh_kba_server_authorized_keys_path is not defined
+  file:
+    path: "~/.ssh"
+    state: directory
+    mode: 0700
+
+- name: SSH public key authorized at server
+  delegate_to: "{{ ssh_kba_server_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_server_authorized_keys_owner }}"
+  authorized_key:
+    comment: "{{ ssh_kba_server_authorized_keys_comment | default(omit) }}"
+    exclusive: "{{ ssh_kba_server_authorized_keys_exclusive | default(omit) }}"
+    key: "{{ ssh_kba_keypair_pub }}"
+    key_options: "{{ ssh_kba_server_authorized_keys_key_options | default(omit) }}"
+    manage_dir: "{{ ssh_kba_server_authorized_keys_manage_dir | default(omit) }}"
+    path: "{{ ssh_kba_server_authorized_keys_path | default(omit) }}"
+    state: present
+    user: "{{ ssh_kba_server_authorized_keys_owner }}"

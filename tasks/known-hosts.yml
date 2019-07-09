@@ -1,0 +1,24 @@
+---
+- name: SSH home directory present at client
+  delegate_to: "{{ ssh_kba_client_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_client_known_hosts_owner }}"
+  when: >-
+      ssh_kba_client_known_hosts_path is not defined
+  file:
+    path: "~/.ssh"
+    state: directory
+    mode: 0700
+
+- name: SSH host keys registered at client
+  delegate_to: "{{ ssh_kba_client_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_client_known_hosts_owner }}"
+  loop: >-
+    {{ ssh_kba_server_host_names_and_keys }}
+  known_hosts:
+    hash_host: "{{ ssh_kba_client_known_hosts_hash_host | default(omit) }}"
+    key: "{{ item.1 }}"
+    name: "{{ item.0 }}"
+    path: "{{ ssh_kba_client_known_hosts_path | default(omit) }}"
+    state: present
