@@ -1,8 +1,5 @@
 ---
 - name: SSH keypair present at client
-  delegate_to: "{{ ssh_kba_client_hostname }}"
-  become: yes
-  become_user: "{{ ssh_kba_keypair_owner }}"
   register: ssh_kba_keypair_result
   openssh_keypair:
     attributes: "{{ ssh_kba_keypair_attributes | default(omit) }}"

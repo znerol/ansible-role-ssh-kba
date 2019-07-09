@@ -1,13 +1,37 @@
 ---
-- include_tasks: known-hosts.yml
+- name: SSH host keys registered at client
   when: >-
     ssh_kba_server_host_names_and_keys | length > 0
+  delegate_to: "{{ ssh_kba_client_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_client_known_hosts_owner }}"
+  block:
+    - import_tasks: known-hosts.yml
 
-- include_tasks: keypair-native.yml
-  when: ssh_kba_keypair_pub is not defined and ansible_version.full is version_compare('2.8', '>=')
+- name: SSH keypair present at client
+  when: >-
+    ssh_kba_keypair_pub is not defined
+    and ansible_version.full is version_compare('2.8', '>=')
+  delegate_to: "{{ ssh_kba_client_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_keypair_owner }}"
+  block:
+    - import_tasks: keypair-native.yml
 
-- include_tasks: keypair-compat.yml
-  when: ssh_kba_keypair_pub is not defined and ansible_version.full is version_compare('2.8', '<')
+- name: SSH keypair present at client
+  when: >-
+    ssh_kba_keypair_pub is not defined
+    and ansible_version.full is version_compare('2.8', '<')
+  delegate_to: "{{ ssh_kba_client_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_keypair_owner }}"
+  block:
+    - import_tasks: keypair-compat.yml
 
-- include_tasks: authorized-key.yml
+- name: SSH public key authorized at server
   when: ssh_kba_keypair_pub is defined
+  delegate_to: "{{ ssh_kba_server_hostname }}"
+  become: yes
+  become_user: "{{ ssh_kba_server_authorized_keys_owner }}"
+  block:
+    - import_tasks: authorized-key.yml
