@@ -4,7 +4,7 @@
     ssh_kba_server_host_names_and_keys | length > 0
 
 - include_tasks: keypair-native.yml
-  when: ssh_kba_keypair_pub is not defined and ansible_version.full is version_compare('2.8', '>=')
+  when: ansible_version.full is version_compare('2.8', '>=')
 
 - include_tasks: keypair-compat.yml
   when: ssh_kba_keypair_pub is not defined and ansible_version.full is version_compare('2.8', '<')
